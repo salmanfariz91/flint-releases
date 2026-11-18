@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="demo.css" />
     <style>
       :root {
         --bg: #1e1e1e;
@@ -146,7 +147,7 @@
         margin: 0 auto;
         max-width: 760px;
         color: var(--strong);
-        font-size: clamp(38px, 6.4vw, 64px);
+        font-size: clamp(34px, 6.4vw, 64px);
         font-weight: 700;
         line-height: 1.08;
         letter-spacing: -0.035em;
@@ -358,6 +359,7 @@
         display: flex;
         gap: 16px;
         justify-content: center;
+        align-items: flex-start;
       }
 
       .phones .phone {
@@ -365,8 +367,129 @@
         width: 44%;
       }
 
-      .phones .phone + .phone {
-        margin-top: 56px;
+
+      /* ---- typing headline ---- */
+
+      .typed-line {
+        display: block;
+        min-height: 1.08em;
+        white-space: nowrap;
+      }
+
+      .caret {
+        display: inline-block;
+        width: 0.06em;
+        height: 0.85em;
+        margin-left: 0.06em;
+        vertical-align: -0.06em;
+        background: var(--accent);
+        animation: blink 1s steps(1) infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ---- screenshot tour ---- */
+
+      .tour-tabs {
+        margin: 40px auto 0;
+        padding: 4px;
+        display: flex;
+        gap: 6px;
+        justify-content: safe center;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tour-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tour-tabs button {
+        flex: none;
+        padding: 7px 15px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 14.5px;
+        cursor: pointer;
+        transition: background-color 150ms, color 150ms, border-color 150ms;
+      }
+
+      .tour-tabs button:hover {
+        color: var(--strong);
+      }
+
+      .tour-tabs button[aria-selected='true'] {
+        background: var(--bg-soft);
+        border-color: #4a4a4a;
+        color: var(--strong);
+      }
+
+      .tour-track {
+        position: relative;
+        margin-top: 28px;
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        outline: none;
+      }
+
+      .tour-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tour-slide {
+        flex: 0 0 100%;
+        margin: 0;
+        scroll-snap-align: center;
+      }
+
+      .tour-slide .window,
+      .tour-phones {
+        aspect-ratio: 16 / 10;
+      }
+
+      .tour-phones {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: radial-gradient(closest-side, rgba(124, 107, 224, 0.16), transparent), #19191a;
+      }
+
+      .tour-phones .phone {
+        position: static;
+        width: auto;
+        height: 86%;
+      }
+
+      .tour-phones .phone img {
+        width: auto;
+        height: 100%;
+      }
+
+      .tour-slide figcaption {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 15.5px;
+      }
+
+      .tour-slide figcaption strong {
+        margin-right: 6px;
+        color: var(--strong);
+        font-weight: 600;
       }
 
       /* ---- install help ---- */
@@ -587,6 +710,24 @@
           grid-template-columns: 1fr;
         }
 
+        .tour-tabs {
+          justify-content: flex-start;
+          margin-top: 28px;
+        }
+
+        .tour-track {
+          gap: 16px;
+        }
+
+        .tour-phones .phone {
+          padding: 3px;
+          border-radius: 12px;
+        }
+
+        .tour-phones .phone img {
+          border-radius: 9px;
+        }
+
         footer {
           margin-top: 88px;
         }
@@ -602,6 +743,7 @@
         </a>
         <nav>
           <a href="#features">Features</a>
+          <a href="#tour">Tour</a>
           <a href="#phone">Phone</a>
           <a href="#install">Install</a>
           <a class="nav-btn" href="#get">Download</a>
@@ -613,7 +755,10 @@
       <div class="hero" id="get">
         <div class="wrap">
           <img class="hero-icon" src="img/icon.svg" alt="Flint" />
-          <h1>Your notes, on your computer and your phone.</h1>
+          <h1 aria-label="Your notes, on your computer and your phone.">
+            <span aria-hidden="true">Your notes,</span>
+            <span class="typed-line" aria-hidden="true"><span data-typed>on your computer.</span><span class="caret"></span></span>
+          </h1>
           <p class="sub">Private and in sync. Free for Windows and Android.</p>
 
           <div class="downloads" data-downloads>
@@ -690,20 +835,48 @@
         </div>
       </section>
 
-      <section class="reveal">
-        <div class="wrap split">
-          <div>
-            <h2>Link your ideas</h2>
-            <p class="lead">Type [[ to link one note to another. Flint keeps track of the connections and shows them as a graph.</p>
-            <ul class="points">
-              <li>Links follow a note when you rename it</li>
-              <li>Backlinks list every note that mentions this one</li>
-              <li>Tags, pins and folders</li>
-              <li>Jump to any note with Ctrl+O</li>
-            </ul>
+      <section id="tour" class="reveal">
+        <div class="wrap center">
+          <h2>A closer look</h2>
+          <p class="lead">Swipe through Flint, or pick a screen.</p>
+        </div>
+        <div class="wrap">
+          <div class="tour-tabs" role="tablist" aria-label="Screens">
+            <button type="button" role="tab" aria-selected="true" data-slide="0">Writing</button>
+            <button type="button" role="tab" aria-selected="false" data-slide="1">Links and graph</button>
+            <button type="button" role="tab" aria-selected="false" data-slide="2">Quick switcher</button>
+            <button type="button" role="tab" aria-selected="false" data-slide="3">Light and dark</button>
+            <button type="button" role="tab" aria-selected="false" data-slide="4">Settings</button>
+            <button type="button" role="tab" aria-selected="false" data-slide="5">On your phone</button>
           </div>
-          <div class="window">
-            <img src="img/windows-graph.webp" width="2560" height="1600" alt="Graph view showing notes connected by links" />
+          <div class="tour-track" tabindex="0" aria-label="Screenshots of Flint">
+            <figure class="tour-slide" aria-label="Writing">
+              <div class="demo" data-demo data-view="note" data-theme="dark"></div>
+              <figcaption><strong>Try it.</strong>Type in the note, tick a box, or click a link.</figcaption>
+            </figure>
+            <figure class="tour-slide" aria-label="Links and graph">
+              <div class="demo" data-demo data-view="graph" data-theme="dark"></div>
+              <figcaption><strong>Link your ideas.</strong>Drag the dots. Click one to open that note.</figcaption>
+            </figure>
+            <figure class="tour-slide" aria-label="Quick switcher">
+              <div class="window"><img src="img/windows-switcher.webp" width="2560" height="1600" alt="Flint on Windows: quick switcher" /></div>
+              <figcaption><strong>Find anything.</strong>Press Ctrl+O and jump to any note.</figcaption>
+            </figure>
+            <figure class="tour-slide" aria-label="Light and dark">
+              <div class="demo" data-demo data-view="note" data-theme="light"></div>
+              <figcaption><strong>Light or dark.</strong>Press the sun or moon button at the top right.</figcaption>
+            </figure>
+            <figure class="tour-slide" aria-label="Settings">
+              <div class="window"><img src="img/windows-settings.webp" width="2560" height="1600" alt="Flint on Windows: settings" /></div>
+              <figcaption><strong>Make it yours.</strong>Settings for the editor, files, hotkeys and more.</figcaption>
+            </figure>
+            <figure class="tour-slide" aria-label="On your phone">
+              <div class="tour-phones">
+                <div class="phone"><img src="img/phone-note.webp" width="780" height="1688" alt="A note open on the phone" /></div>
+                <div class="phone"><img src="img/phone-sidebar.webp" width="780" height="1688" alt="Notes and folders on the phone" /></div>
+              </div>
+              <figcaption><strong>On your phone.</strong>The same notes, with the controls at your thumb.</figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -786,6 +959,7 @@
       </div>
     </footer>
 
+    <script src="demo.js"></script>
     <script>
       (function () {
         var REPO = 'salmanfariz91/flint-releases';
@@ -857,6 +1031,95 @@
           items.forEach(function (el) {
             el.classList.add('is-in');
           });
+        }
+
+        var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // The headline types a few short phrases in turn.
+        var typed = document.querySelector('[data-typed]');
+        var phrases = ['on your computer.', 'on your phone.', 'always in sync.', 'kept private.'];
+        if (typed && !calm) {
+          var p = 0;
+          var shown = phrases[0].length;
+          var deleting = false;
+          var step = function () {
+            var word = phrases[p];
+            if (!deleting && shown === word.length) {
+              deleting = true;
+              return setTimeout(step, 2200);
+            }
+            if (deleting && shown === 0) {
+              deleting = false;
+              p = (p + 1) % phrases.length;
+              return setTimeout(step, 300);
+            }
+            shown += deleting ? -1 : 1;
+            typed.textContent = phrases[p].slice(0, shown);
+            setTimeout(step, deleting ? 35 : 75);
+          };
+          setTimeout(step, 1200);
+        }
+
+        // Screenshot tour: tabs, swiping, and slow automatic sliding until the visitor takes over.
+        var track = document.querySelector('.tour-track');
+        var tabBar = document.querySelector('.tour-tabs');
+        if (track && tabBar) {
+          var tabs = Array.prototype.slice.call(tabBar.querySelectorAll('button'));
+          var slides = Array.prototype.slice.call(track.querySelectorAll('.tour-slide'));
+          var current = 0;
+          var auto = !calm;
+          var mark = function (i) {
+            if (i === current) return;
+            current = i;
+            tabs.forEach(function (t, k) {
+              t.setAttribute('aria-selected', String(k === i));
+            });
+            var tab = tabs[i];
+            tabBar.scrollTo({ left: tab.offsetLeft - (tabBar.clientWidth - tab.offsetWidth) / 2, behavior: 'smooth' });
+          };
+          var go = function (i) {
+            track.scrollTo({ left: slides[i].offsetLeft, behavior: calm ? 'auto' : 'smooth' });
+            mark(i);
+          };
+          var stop = function () {
+            auto = false;
+          };
+          tabs.forEach(function (t, i) {
+            t.addEventListener('click', function () {
+              stop();
+              go(i);
+            });
+          });
+          var settle;
+          track.addEventListener(
+            'scroll',
+            function () {
+              clearTimeout(settle);
+              settle = setTimeout(function () {
+                var width = slides[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || '0');
+                mark(Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / width))));
+              }, 80);
+            },
+            { passive: true },
+          );
+          ['pointerdown', 'wheel', 'touchstart', 'keydown', 'focusin'].forEach(function (name) {
+            track.addEventListener(name, stop, { passive: true });
+          });
+          track.addEventListener('keydown', function (e) {
+            var t = e.target;
+            if (t.isContentEditable || /INPUT|TEXTAREA|SELECT/.test(t.tagName) || (t.closest && t.closest('.d-node'))) return;
+            if (e.key === 'ArrowRight') go(Math.min(slides.length - 1, current + 1));
+            if (e.key === 'ArrowLeft') go(Math.max(0, current - 1));
+          });
+          var inView = false;
+          if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+              inView = entries[0].isIntersecting;
+            }, { threshold: 0.5 }).observe(track);
+          }
+          setInterval(function () {
+            if (auto && inView && !document.hidden) go((current + 1) % slides.length);
+          }, 4500);
         }
 
         var top = document.querySelector('.top');

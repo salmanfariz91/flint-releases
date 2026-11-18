@@ -1,0 +1,522 @@
+/* The working copy of Flint on the download page. */
+
+.demo {
+  --d-bg: #1e1f22;
+  --d-side: #191a1c;
+  --d-tabs: #161719;
+  --d-text: #dcddde;
+  --d-strong: #ffffff;
+  --d-muted: #9a9aa0;
+  --d-faint: #6c6c72;
+  --d-line: #2c2d31;
+  --d-hover: rgba(255, 255, 255, 0.06);
+  --d-active: rgba(124, 107, 224, 0.26);
+  --d-accent: #7c6be0;
+  --d-link: #a597ff;
+  --d-node: #8f8f96;
+  aspect-ratio: 16 / 10;
+  border: 1px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--d-bg);
+  color: var(--d-text);
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: left;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  transition: background-color 250ms, color 250ms;
+}
+
+.demo[data-theme='light'] {
+  --d-bg: #ffffff;
+  --d-side: #f6f6f7;
+  --d-tabs: #ececee;
+  --d-text: #2a2a2e;
+  --d-strong: #111114;
+  --d-muted: #6b6b72;
+  --d-faint: #9a9aa0;
+  --d-line: #e2e2e6;
+  --d-hover: rgba(0, 0, 0, 0.05);
+  --d-active: rgba(124, 107, 224, 0.15);
+  --d-accent: #6b59d6;
+  --d-link: #5b49c4;
+  --d-node: #8a8a92;
+  border-color: #3a3a3a;
+}
+
+.demo button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.demo svg {
+  display: block;
+}
+
+.demo {
+  position: relative;
+}
+
+/* Fills the box exactly, so the notes scroll inside it instead of stretching it. */
+.d-win {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+/* ---- sidebar ---- */
+
+.d-side {
+  flex: 0 0 23%;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  background: var(--d-side);
+  border-right: 1px solid var(--d-line);
+  transition: background-color 250ms;
+}
+
+.d-bar {
+  height: 42px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--d-line);
+}
+
+.d-dots {
+  display: flex;
+  gap: 6px;
+  margin-right: 8px;
+}
+
+.d-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.d-dots i:nth-child(2) {
+  background: #febc2e;
+}
+
+.d-dots i:nth-child(3) {
+  background: #28c840;
+}
+
+.d-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--d-muted);
+  transition: background-color 120ms, color 120ms;
+}
+
+.d-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+button.d-icon:hover,
+.d-icon.is-on {
+  background: var(--d-hover);
+  color: var(--d-strong);
+}
+
+.d-tree {
+  flex: 1;
+  min-height: 0;
+  padding: 10px 8px;
+  overflow-y: auto;
+}
+
+.d-label {
+  margin: 6px 8px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--d-faint);
+}
+
+.d-label + .d-label,
+.d-pinned + .d-label {
+  margin-top: 12px;
+}
+
+.d-folder {
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--d-text);
+  font-size: 13px;
+}
+
+.d-folder svg {
+  width: 13px;
+  height: 13px;
+  color: var(--d-faint);
+}
+
+.d-row {
+  width: 100%;
+  padding: 4px 8px 4px 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: left;
+  color: var(--d-text) !important;
+  transition: background-color 120ms;
+}
+
+.d-row:hover {
+  background: var(--d-hover);
+}
+
+.d-row.is-active {
+  background: var(--d-active);
+  color: var(--d-strong) !important;
+}
+
+.d-pinned {
+  padding-left: 8px;
+}
+
+.d-pinned svg {
+  width: 13px;
+  height: 13px;
+  color: var(--d-muted);
+}
+
+.d-foot {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--d-line);
+  font-size: 12px;
+  color: var(--d-muted);
+}
+
+.d-foot i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3fb950;
+}
+
+/* ---- main ---- */
+
+.d-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.d-tabs {
+  height: 42px;
+  padding: 7px 10px 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  background: var(--d-tabs);
+  border-bottom: 1px solid var(--d-line);
+  transition: background-color 250ms;
+}
+
+.d-tab {
+  max-width: 220px;
+  padding: 7px 16px;
+  border: 1px solid var(--d-line);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--d-bg);
+  color: var(--d-strong);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: -1px;
+}
+
+.d-grow {
+  flex: 1;
+}
+
+.d-theme {
+  align-self: center;
+  margin-bottom: 4px;
+  color: var(--d-strong);
+  background: var(--d-hover);
+}
+
+.d-crumb {
+  height: 34px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--d-muted);
+}
+
+.d-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.d-page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 18px 28px 40px;
+}
+
+.d-title {
+  margin: 0;
+  color: var(--d-strong);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+
+.d-meta {
+  margin: 4px 0 16px;
+  font-size: 12px;
+  color: var(--d-muted);
+}
+
+.d-body {
+  outline: none;
+  caret-color: var(--d-accent);
+  color: var(--d-text);
+}
+
+.d-body p {
+  margin: 0 0 10px;
+}
+
+.d-body h3 {
+  margin: 18px 0 6px;
+  color: var(--d-strong);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.d-body ul,
+.d-body ol {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+
+.d-body li {
+  margin: 2px 0;
+}
+
+.d-body ol li::marker {
+  color: var(--d-muted);
+}
+
+.d-checks {
+  list-style: none;
+  padding-left: 0 !important;
+}
+
+.d-checks li {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.d-box {
+  flex: none;
+  position: relative;
+  top: 2px;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid var(--d-faint);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 120ms, border-color 120ms;
+}
+
+.is-done > .d-box {
+  border-color: var(--d-accent);
+  background: var(--d-accent)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E")
+    center / 11px no-repeat;
+}
+
+.d-checks li.is-done {
+  color: var(--d-faint);
+  text-decoration: line-through;
+}
+
+.d-link {
+  color: var(--d-link);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--d-link) 45%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.d-link:hover {
+  text-decoration-color: var(--d-link);
+}
+
+.d-body blockquote {
+  margin: 12px 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--d-line);
+  color: var(--d-muted);
+  font-style: italic;
+}
+
+.d-body table {
+  margin: 6px 0 12px;
+  border-collapse: collapse;
+}
+
+.d-body th,
+.d-body td {
+  padding: 5px 14px;
+  border: 1px solid var(--d-line);
+  text-align: left;
+}
+
+.d-body th {
+  color: var(--d-strong);
+  font-weight: 600;
+}
+
+.d-tags {
+  color: var(--d-muted);
+}
+
+.d-status {
+  height: 28px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px solid var(--d-line);
+  font-size: 11.5px;
+  color: var(--d-muted);
+}
+
+/* ---- graph ---- */
+
+.d-graph {
+  display: none !important;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+}
+
+.demo[data-view='graph'] .d-graph {
+  display: block !important;
+}
+
+.demo[data-view='graph'] .d-scroll,
+.demo[data-view='graph'] .d-crumb {
+  display: none;
+}
+
+.d-edge {
+  stroke: var(--d-line);
+  stroke-width: 1.5;
+  transition: stroke 150ms, opacity 150ms;
+}
+
+.d-node {
+  cursor: grab;
+  outline: none;
+}
+
+.d-node:active {
+  cursor: grabbing;
+}
+
+.d-node circle {
+  fill: var(--d-node);
+  transition: fill 150ms, opacity 150ms;
+}
+
+.d-node text {
+  fill: var(--d-text);
+  font-size: 13px;
+  text-anchor: middle;
+  pointer-events: none;
+  transition: opacity 150ms;
+}
+
+.d-node:hover circle,
+.d-node:focus-visible circle {
+  fill: var(--d-accent);
+}
+
+.d-graph.is-focus .d-node:not(.is-near) {
+  opacity: 0.3;
+}
+
+.d-graph.is-focus .d-edge {
+  opacity: 0.25;
+}
+
+.d-graph.is-focus .d-edge.is-near {
+  opacity: 1;
+  stroke: var(--d-accent);
+}
+
+.d-graph.is-focus .d-node.is-near circle {
+  fill: var(--d-accent);
+}
+
+.d-mobile {
+  display: none !important;
+}
+
+/* ---- small screens ---- */
+
+@media (max-width: 760px) {
+  .demo {
+    aspect-ratio: auto;
+    height: 460px;
+  }
+
+  .d-side {
+    display: none;
+  }
+
+  .d-mobile {
+    display: grid !important;
+    align-self: center;
+    margin-bottom: 4px;
+  }
+
+  .d-page {
+    padding: 14px 18px 30px;
+  }
+
+  .d-title {
+    font-size: 24px;
+  }
+
+}
+
