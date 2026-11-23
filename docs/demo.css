@@ -20,7 +20,7 @@
   overflow: hidden;
   background: var(--d-bg);
   color: var(--d-text);
-  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  font-family: inherit;
   font-size: 14px;
   line-height: 1.55;
   text-align: left;
