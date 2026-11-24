@@ -438,54 +438,193 @@ button.d-icon:hover,
   display: none;
 }
 
-.d-edge {
-  stroke: var(--d-line);
-  stroke-width: 1.5;
-  transition: stroke 150ms, opacity 150ms;
+.d-main {
+  position: relative;
 }
 
-.d-node {
+/* a soft light in the middle and a faint dot grid behind the graph */
+.demo[data-view='graph'] .d-graph {
   cursor: grab;
-  outline: none;
+  background:
+    radial-gradient(60% 70% at 50% 50%, rgba(124, 107, 224, 0.2), transparent 70%),
+    radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.4px) 0 0 / 22px 22px;
 }
 
-.d-node:active {
+.demo[data-theme='light'][data-view='graph'] .d-graph {
+  background:
+    radial-gradient(60% 70% at 50% 50%, rgba(124, 107, 224, 0.12), transparent 70%),
+    radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1.4px) 0 0 / 22px 22px;
+}
+
+.demo[data-view='graph'] .d-graph:active {
   cursor: grabbing;
 }
 
-.d-node circle {
-  fill: var(--d-node);
-  transition: fill 150ms, opacity 150ms;
+.d-edge {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 150ms, opacity 150ms;
 }
 
-.d-node text {
-  fill: var(--d-text);
-  font-size: 13px;
-  text-anchor: middle;
-  pointer-events: none;
+.demo[data-theme='light'] .d-edge {
+  stroke: rgba(20, 20, 40, 0.28);
+}
+
+.d-node {
+  cursor: pointer;
+  outline: none;
+  --dot: #d9d9e3;
+}
+
+/* each folder has its own colour */
+.d-node.is-work {
+  --dot: #a99bff;
+}
+
+.d-node.is-travel {
+  --dot: #ffb95e;
+}
+
+.d-node.is-personal {
+  --dot: #62dbb8;
+}
+
+.demo[data-theme='light'] .d-node.is-work {
+  --dot: #6b59d6;
+}
+
+.demo[data-theme='light'] .d-node.is-travel {
+  --dot: #d98312;
+}
+
+.demo[data-theme='light'] .d-node.is-personal {
+  --dot: #1f9d7c;
+}
+
+.d-dot {
+  fill: var(--dot);
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 0.8;
   transition: opacity 150ms;
 }
 
-.d-node:hover circle,
-.d-node:focus-visible circle {
-  fill: var(--d-accent);
+.d-halo {
+  fill: var(--dot);
+  opacity: 0.16;
+  transition: opacity 150ms;
 }
 
-.d-graph.is-focus .d-node:not(.is-near) {
+.d-node.is-hub .d-halo {
   opacity: 0.3;
 }
 
+.d-node text {
+  fill: var(--d-strong);
+  font-size: 10.5px;
+  font-weight: 500;
+  text-anchor: middle;
+  pointer-events: none;
+  opacity: 0;
+  paint-order: stroke;
+  stroke: var(--d-bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  transition: opacity 150ms;
+}
+
+/* names show for the busiest notes, when zoomed in, and for the note under the pointer and its neighbours */
+.d-node.is-hub text,
+.d-graph.is-zoomed .d-node text,
+.d-node:hover text,
+.d-node:focus-visible text,
+.d-node.is-near text {
+  opacity: 1;
+}
+
+.d-node.is-hub text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.d-node:hover .d-halo,
+.d-node:focus-visible .d-halo,
+.d-node.is-near .d-halo {
+  opacity: 0.5;
+}
+
+.d-graph.is-focus .d-node:not(.is-near) {
+  opacity: 0.22;
+}
+
 .d-graph.is-focus .d-edge {
-  opacity: 0.25;
+  opacity: 0.18;
 }
 
 .d-graph.is-focus .d-edge.is-near {
   opacity: 1;
+  stroke: #ffffff;
+  stroke-width: 1.6;
+}
+
+.demo[data-theme='light'] .d-graph.is-focus .d-edge.is-near {
   stroke: var(--d-accent);
 }
 
-.d-graph.is-focus .d-node.is-near circle {
-  fill: var(--d-accent);
+/* zoom buttons and the hint */
+.d-zoom,
+.d-hint {
+  display: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.demo[data-view='graph'] .d-zoom {
+  right: 14px;
+  bottom: 42px;
+  display: grid;
+  gap: 6px;
+}
+
+.d-zoom button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--d-line) !important;
+  border-radius: 9px;
+  background: var(--d-side) !important;
+  color: var(--d-strong) !important;
+  font-size: 19px !important;
+  line-height: 1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  transition: background-color 120ms;
+}
+
+.d-zoom button:hover {
+  background: var(--d-hover) !important;
+}
+
+.d-zoom svg {
+  width: 16px;
+  height: 16px;
+}
+
+.demo[data-view='graph'] .d-hint {
+  left: 14px;
+  bottom: 40px;
+  display: block;
+  padding: 5px 11px;
+  border: 1px solid var(--d-line);
+  border-radius: 999px;
+  background: var(--d-side);
+  color: var(--d-muted);
+  font-size: 11.5px;
+  transition: opacity 300ms;
+}
+
+.demo.is-graph-active .d-hint {
+  opacity: 0;
 }
 
 .d-mobile {

@@ -60,6 +60,55 @@
       body: '<p>Attendees: design, product, support.</p><ol><li>Review the [[weekly]]</li><li>Roadmap for [[ideas]]</li></ol><p class="d-tags">#work</p>',
     },
   };
+  // More notes, so the graph looks like a real notebook: [id, title, folder, text, links]. They open like any note.
+  [
+    ['tokyo', 'Tokyo', 'Travel', 'Two days in the city before Kyoto.', ['kyoto', 'flights', 'hotels', 'food']],
+    ['osaka', 'Osaka', 'Travel', 'A day trip for the food and the castle.', ['kyoto', 'food', 'nara']],
+    ['flights', 'Flights', 'Travel', 'Outbound on the 3rd, back on the 14th.', ['budget', 'packing']],
+    ['hotels', 'Hotels', 'Travel', 'Ryokan in Kyoto, a small hotel in Tokyo.', ['budget', 'kyoto']],
+    ['phrases', 'Japanese phrases', 'Travel', 'Hello, thank you, and where is the station.', ['kyoto', 'tokyo']],
+    ['temples', 'Temples to visit', 'Travel', 'Kinkaku-ji, Kiyomizu-dera and Todai-ji.', ['kyoto', 'nara']],
+    ['food', 'Places to eat', 'Travel', 'Ramen, okonomiyaki and a tea house.', ['ramen']],
+    ['photos', 'Photo spots', 'Travel', 'Best light is early morning.', ['kyoto', 'temples', 'osaka']],
+    ['railpass', 'Rail pass', 'Travel', 'Seven days covers every trip.', ['flights', 'packing', 'osaka']],
+    ['recipes', 'Recipes', 'Personal', 'Things worth cooking again.', ['ramen', 'curry']],
+    ['ramen', 'Ramen at home', 'Personal', 'Broth the day before, noodles fresh.', ['recipes']],
+    ['curry', 'Weeknight curry', 'Personal', 'Thirty minutes, one pan.', ['recipes', 'groceries']],
+    ['groceries', 'Groceries', 'Personal', 'The usual weekly list.', ['budget']],
+    ['goals', 'Goals 2027', 'Personal', 'Travel more, read more, save more.', ['budget', 'reading', 'workout', 'savings']],
+    ['savings', 'Savings plan', 'Personal', 'A fixed amount on the first of the month.', ['budget']],
+    ['taxes', 'Taxes', 'Personal', 'Papers to collect before April.', ['budget', 'savings']],
+    ['workout', 'Workout plan', 'Personal', 'Three short sessions a week.', ['sleep']],
+    ['sleep', 'Sleep notes', 'Personal', 'No screens after ten.', ['habits']],
+    ['gifts', 'Gift ideas', 'Personal', 'Written down as soon as someone mentions one.', ['budget']],
+    ['garden', 'Garden', 'Personal', 'Herbs on the balcony.', ['groceries']],
+    ['movies', 'Films to watch', 'Personal', 'For rainy weekends.', ['reading']],
+    ['deepwork', 'Deep Work', 'Personal', 'Notes from the book.', ['reading', 'focus']],
+    ['design', 'Design of Everyday Things', 'Personal', 'Notes from the book.', ['reading', 'ideas']],
+    ['habits', 'Atomic Habits', 'Personal', 'Notes from the book.', ['reading', 'goals']],
+    ['focus', 'Focus time', 'Personal', 'Two quiet hours every morning.', ['weekly', 'deepwork']],
+    ['roadmap', 'Roadmap', 'Work', 'What ships this quarter and next.', ['ideas', 'meeting', 'okrs']],
+    ['okrs', 'Goals for the quarter', 'Work', 'Three goals, each with a number.', ['weekly', 'roadmap']],
+    ['search', 'Faster search', 'Work', 'Results should appear while typing.', ['ideas', 'roadmap']],
+    ['offline', 'Offline mode', 'Work', 'The field team needs it most.', ['ideas', 'customers']],
+    ['darkmode', 'Dark mode', 'Work', 'Every screen, not only the editor.', ['ideas', 'designteam']],
+    ['release', 'Version 1.2', 'Work', 'Shipped on Friday.', ['weekly', 'roadmap', 'support']],
+    ['designteam', 'Design team', 'Work', 'Who is working on what.', ['meeting', 'design']],
+    ['support', 'Support notes', 'Work', 'The questions that keep coming back.', ['meeting', 'customers']],
+    ['customers', 'Customer calls', 'Work', 'What people asked for this month.', ['ideas', 'pricing']],
+    ['pricing', 'Pricing', 'Work', 'Keep it simple.', ['roadmap']],
+    ['onboarding', 'Onboarding', 'Work', 'The first five minutes matter most.', ['customers', 'designteam']],
+    ['hiring', 'Hiring', 'Work', 'One designer, one engineer.', ['meeting']],
+    ['standup', 'Daily standup', 'Work', 'Ten minutes, standing.', ['weekly', 'release']],
+    ['retro', 'Retro', 'Work', 'What went well and what did not.', ['weekly', 'standup', 'release']],
+  ].forEach(function (m) {
+    NOTES[m[0]] = {
+      title: m[1],
+      folder: m[2],
+      body: '<p>' + m[3] + '</p><p>See also: ' + m[4].map(function (id) { return '[[' + id + ']]'; }).join(', ') + '.</p>',
+    };
+  });
+
   var TREE = [
     ['Personal', ['budget', 'reading']],
     ['Travel', ['packing', 'nara', 'kyoto']],
@@ -74,6 +123,7 @@
     moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
     chevron: '<path d="M6 9l6 6 6-6"/>',
     pin: '<path d="M6 4h12v17l-6-4-6 4z"/>',
+    fit: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   };
   var icon = function (name) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
@@ -108,43 +158,6 @@
       });
     });
     return edges;
-  }
-
-  /** Lays the notes out so linked ones sit near each other. */
-  function layout(ids, edges, w, h) {
-    var pos = {};
-    ids.forEach(function (id, i) {
-      var a = (i / ids.length) * Math.PI * 2;
-      pos[id] = { x: w / 2 + Math.cos(a) * w * 0.3, y: h / 2 + Math.sin(a) * h * 0.3 };
-    });
-    for (var step = 0; step < 400; step++) {
-      var force = {};
-      ids.forEach(function (id) { force[id] = { x: 0, y: 0 }; });
-      ids.forEach(function (a) {
-        ids.forEach(function (b) {
-          if (a === b) return;
-          var dx = pos[a].x - pos[b].x, dy = pos[a].y - pos[b].y;
-          var d2 = Math.max(dx * dx + dy * dy, 100);
-          var f = 9000 / d2;
-          force[a].x += (dx / Math.sqrt(d2)) * f;
-          force[a].y += (dy / Math.sqrt(d2)) * f;
-        });
-        force[a].x += (w / 2 - pos[a].x) * 0.012;
-        force[a].y += (h / 2 - pos[a].y) * 0.012;
-      });
-      edges.forEach(function (e) {
-        var dx = pos[e.b].x - pos[e.a].x, dy = pos[e.b].y - pos[e.a].y;
-        var d = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-        var f = (d - 120) * 0.04;
-        force[e.a].x += (dx / d) * f; force[e.a].y += (dy / d) * f;
-        force[e.b].x -= (dx / d) * f; force[e.b].y -= (dy / d) * f;
-      });
-      ids.forEach(function (id) {
-        pos[id].x = Math.min(w - 70, Math.max(70, pos[id].x + Math.max(-12, Math.min(12, force[id].x))));
-        pos[id].y = Math.min(h - 40, Math.max(30, pos[id].y + Math.max(-12, Math.min(12, force[id].y))));
-      });
-    }
-    return pos;
   }
 
   function Demo(root) {
@@ -186,6 +199,10 @@
       '<div class="d-body" contenteditable="true" spellcheck="false"></div>' +
       '</article></div>' +
       '<svg class="d-graph" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid meet"></svg>' +
+      '<div class="d-zoom"><button type="button" data-zoom="in" aria-label="Zoom in">+</button>' +
+      '<button type="button" data-zoom="out" aria-label="Zoom out">&minus;</button>' +
+      '<button type="button" data-zoom="fit" aria-label="Show the whole graph">' + icon('fit') + '</button></div>' +
+      '<div class="d-hint">Click the graph, then scroll to zoom. Drag to move.</div>' +
       '<div class="d-status"></div>' +
       '</div></div>';
 
@@ -259,63 +276,201 @@
       }
     });
 
-    // ---- graph ----
+    // ---- graph: every note is a dot, every link a line; it settles like a real graph, and can be zoomed and moved ----
+    var GW = 800, GH = 460;
     var ids = Object.keys(NOTES);
     var edges = links();
-    var degree = {};
-    ids.forEach(function (id) { degree[id] = 0; });
-    edges.forEach(function (e) { degree[e.a]++; degree[e.b]++; });
-    var pos = layout(ids, edges, 800, 460);
+    var degree = {}, near = {}, pos = {}, vel = {};
+    ids.forEach(function (id, i) {
+      degree[id] = 0;
+      near[id] = {};
+      // start on a spiral so the dots spread evenly before they settle
+      var a = i * 2.39996, r = 15 * Math.sqrt(i + 1);
+      pos[id] = { x: GW / 2 + Math.cos(a) * r * 1.5, y: GH / 2 + Math.sin(a) * r };
+      vel[id] = { x: 0, y: 0 };
+    });
+    edges.forEach(function (e) {
+      degree[e.a]++; degree[e.b]++;
+      near[e.a][e.b] = true; near[e.b][e.a] = true;
+    });
+    var held = null;
+
+    /** One small step: dots push each other away, links pull together, everything leans to the middle. */
+    function tick() {
+      var i, j, a, b, dx, dy, d2, d, f;
+      for (i = 0; i < ids.length; i++) {
+        a = pos[ids[i]];
+        for (j = i + 1; j < ids.length; j++) {
+          b = pos[ids[j]];
+          dx = a.x - b.x; dy = a.y - b.y;
+          d2 = Math.max(dx * dx + dy * dy, 36);
+          if (d2 > 90000) continue;
+          d = Math.sqrt(d2);
+          f = 2600 / d2;
+          vel[ids[i]].x += (dx / d) * f; vel[ids[i]].y += (dy / d) * f;
+          vel[ids[j]].x -= (dx / d) * f; vel[ids[j]].y -= (dy / d) * f;
+        }
+        vel[ids[i]].x += (GW / 2 - a.x) * 0.0028;
+        vel[ids[i]].y += (GH / 2 - a.y) * 0.0075;
+      }
+      edges.forEach(function (e) {
+        dx = pos[e.b].x - pos[e.a].x; dy = pos[e.b].y - pos[e.a].y;
+        d = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+        f = (d - 58) * 0.03;
+        vel[e.a].x += (dx / d) * f; vel[e.a].y += (dy / d) * f;
+        vel[e.b].x -= (dx / d) * f; vel[e.b].y -= (dy / d) * f;
+      });
+      ids.forEach(function (id) {
+        vel[id].x *= 0.8; vel[id].y *= 0.8;
+        if (id === held) return;
+        pos[id].x += Math.max(-9, Math.min(9, vel[id].x));
+        pos[id].y += Math.max(-9, Math.min(9, vel[id].y));
+      });
+    }
+    for (var warmup = 0; warmup < 420; warmup++) tick();
+
     var NS = 'http://www.w3.org/2000/svg';
+    var world = document.createElementNS(NS, 'g');
+    graph.appendChild(world);
     var lines = edges.map(function (e) {
       var l = document.createElementNS(NS, 'line');
       l.setAttribute('class', 'd-edge');
-      graph.appendChild(l);
+      world.appendChild(l);
       return { e: e, el: l };
     });
     var nodes = ids.map(function (id) {
       var g = document.createElementNS(NS, 'g');
-      g.setAttribute('class', 'd-node');
+      var r = Math.min(13, 3.6 + degree[id] * 1.15);
+      g.setAttribute('class', 'd-node is-' + NOTES[id].folder.toLowerCase() + (degree[id] >= 5 ? ' is-hub' : ''));
       g.setAttribute('tabindex', '0');
       g.setAttribute('role', 'button');
       g.setAttribute('aria-label', 'Open ' + NOTES[id].title);
+      var halo = document.createElementNS(NS, 'circle');
+      halo.setAttribute('class', 'd-halo');
+      halo.setAttribute('r', String(r + 7));
       var c = document.createElementNS(NS, 'circle');
-      c.setAttribute('r', String(7 + degree[id] * 2.2));
+      c.setAttribute('class', 'd-dot');
+      c.setAttribute('r', String(r));
       var t = document.createElementNS(NS, 'text');
-      t.setAttribute('dy', String(24 + degree[id] * 2.2));
+      t.setAttribute('dy', String(r + 13));
       t.textContent = NOTES[id].title;
+      g.appendChild(halo);
       g.appendChild(c);
       g.appendChild(t);
-      graph.appendChild(g);
+      world.appendChild(g);
       return { id: id, el: g };
     });
     function place() {
       lines.forEach(function (l) {
-        l.el.setAttribute('x1', pos[l.e.a].x); l.el.setAttribute('y1', pos[l.e.a].y);
-        l.el.setAttribute('x2', pos[l.e.b].x); l.el.setAttribute('y2', pos[l.e.b].y);
+        l.el.setAttribute('x1', pos[l.e.a].x.toFixed(1)); l.el.setAttribute('y1', pos[l.e.a].y.toFixed(1));
+        l.el.setAttribute('x2', pos[l.e.b].x.toFixed(1)); l.el.setAttribute('y2', pos[l.e.b].y.toFixed(1));
       });
-      nodes.forEach(function (n) { n.el.setAttribute('transform', 'translate(' + pos[n.id].x + ' ' + pos[n.id].y + ')'); });
+      nodes.forEach(function (n) { n.el.setAttribute('transform', 'translate(' + pos[n.id].x.toFixed(1) + ' ' + pos[n.id].y.toFixed(1) + ')'); });
     }
     function highlight(id) {
-      var near = {};
-      if (id) {
-        near[id] = true;
-        edges.forEach(function (e) {
-          if (e.a === id) near[e.b] = true;
-          if (e.b === id) near[e.a] = true;
-        });
-      }
       graph.classList.toggle('is-focus', !!id);
-      nodes.forEach(function (n) { n.el.classList.toggle('is-near', !!near[n.id]); });
+      nodes.forEach(function (n) { n.el.classList.toggle('is-near', !!id && (n.id === id || !!near[id][n.id])); });
       lines.forEach(function (l) { l.el.classList.toggle('is-near', !!id && (l.e.a === id || l.e.b === id)); });
     }
     place();
-    var drag = null;
-    function point(e) {
+
+    // After a dot is moved the rest settle again for a moment.
+    var heat = 0, running = false;
+    function settle() {
+      if (heat < 0.03) { running = false; return; }
+      tick();
+      heat *= 0.95;
+      place();
+      requestAnimationFrame(settle);
+    }
+    function warm(v) {
+      heat = Math.max(heat, v);
+      if (!running) { running = true; requestAnimationFrame(settle); }
+    }
+
+    // Zoom and move. cam.k is the zoom; cam.x / cam.y slide the picture.
+    var cam = { k: 1, x: 0, y: 0 };
+    function frame() {
+      world.setAttribute('transform', 'translate(' + cam.x.toFixed(1) + ' ' + cam.y.toFixed(1) + ') scale(' + cam.k.toFixed(3) + ')');
+      graph.classList.toggle('is-zoomed', cam.k > 1.55);
+    }
+    function rootPoint(e) {
       var p = graph.createSVGPoint();
       p.x = e.clientX; p.y = e.clientY;
       return p.matrixTransform(graph.getScreenCTM().inverse());
     }
+    function point(e) {
+      var p = rootPoint(e);
+      return { x: (p.x - cam.x) / cam.k, y: (p.y - cam.y) / cam.k };
+    }
+    function zoomAt(cx, cy, by) {
+      var k = Math.min(5, Math.max(0.55, cam.k * by));
+      cam.x = cx - (cx - cam.x) * (k / cam.k);
+      cam.y = cy - (cy - cam.y) * (k / cam.k);
+      cam.k = k;
+      frame();
+    }
+    root.querySelectorAll('[data-zoom]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var how = b.getAttribute('data-zoom');
+        if (how === 'fit') { cam = { k: 1, x: 0, y: 0 }; frame(); }
+        else zoomAt(GW / 2, GH / 2, how === 'in' ? 1.45 : 1 / 1.45);
+      });
+    });
+
+    var drag = null, pan = null, touches = {}, pinch = 0, active = false;
+    graph.addEventListener('pointerdown', function (e) {
+      active = true;
+      root.classList.add('is-graph-active');
+      touches[e.pointerId] = rootPoint(e);
+      if (e.target.closest && e.target.closest('.d-node')) return;
+      graph.setPointerCapture(e.pointerId);
+      var p = touches[e.pointerId];
+      pan = { sx: p.x, sy: p.y, x: cam.x, y: cam.y };
+      pinch = 0;
+    });
+    graph.addEventListener('pointermove', function (e) {
+      if (!touches[e.pointerId]) return;
+      touches[e.pointerId] = rootPoint(e);
+      var keys = Object.keys(touches);
+      if (keys.length === 2 && !drag) {
+        var a = touches[keys[0]], b = touches[keys[1]];
+        var gap = Math.max(Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)), 1);
+        if (pinch) zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, gap / pinch);
+        pinch = gap;
+        pan = null;
+      } else if (pan) {
+        var p = touches[e.pointerId];
+        cam.x = pan.x + (p.x - pan.sx);
+        cam.y = pan.y + (p.y - pan.sy);
+        frame();
+      }
+    });
+    var lift = function (e) {
+      delete touches[e.pointerId];
+      pan = null;
+      pinch = 0;
+    };
+    graph.addEventListener('pointerup', lift);
+    graph.addEventListener('pointercancel', lift);
+    graph.addEventListener('pointerleave', function () {
+      if (Object.keys(touches).length) return;
+      active = false;
+      root.classList.remove('is-graph-active');
+    });
+    // The wheel zooms only after a click inside the graph, so it never traps someone scrolling the page.
+    graph.addEventListener('wheel', function (e) {
+      if (!active && !e.ctrlKey) return;
+      e.preventDefault();
+      var p = rootPoint(e);
+      zoomAt(p.x, p.y, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0016)));
+    }, { passive: false });
+    graph.addEventListener('dblclick', function (e) {
+      if (e.target.closest && e.target.closest('.d-node')) return;
+      var p = rootPoint(e);
+      zoomAt(p.x, p.y, 1.6);
+    });
+
     nodes.forEach(function (n) {
       n.el.addEventListener('pointerenter', function () { if (!drag) highlight(n.id); });
       n.el.addEventListener('pointerleave', function () { if (!drag) highlight(null); });
@@ -324,23 +479,29 @@
         n.el.setPointerCapture(e.pointerId);
         var p = point(e);
         drag = { id: n.id, dx: pos[n.id].x - p.x, dy: pos[n.id].y - p.y, moved: 0, sx: e.clientX, sy: e.clientY };
+        held = n.id;
         highlight(n.id);
       });
       n.el.addEventListener('pointermove', function (e) {
         if (!drag || drag.id !== n.id) return;
         var p = point(e);
-        pos[n.id].x = Math.min(780, Math.max(20, p.x + drag.dx));
-        pos[n.id].y = Math.min(440, Math.max(20, p.y + drag.dy));
+        pos[n.id].x = p.x + drag.dx;
+        pos[n.id].y = p.y + drag.dy;
         drag.moved = Math.max(drag.moved, Math.abs(e.clientX - drag.sx) + Math.abs(e.clientY - drag.sy));
         place();
+        if (drag.moved > 5) warm(0.5);
       });
-      n.el.addEventListener('pointerup', function () {
+      var drop = function () {
         if (!drag) return;
         var clicked = drag.moved < 5;
         drag = null;
+        held = null;
         highlight(null);
         if (clicked) open(n.id);
-      });
+        else warm(0.4);
+      };
+      n.el.addEventListener('pointerup', drop);
+      n.el.addEventListener('pointercancel', function () { drag = null; held = null; highlight(null); });
       n.el.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
