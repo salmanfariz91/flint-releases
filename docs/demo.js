@@ -160,6 +160,8 @@
     return edges;
   }
 
+  var SETTLED = null;
+
   function Demo(root) {
     var theme = root.getAttribute('data-theme') || 'dark';
     var view = root.getAttribute('data-view') || 'note';
@@ -327,7 +329,14 @@
         pos[id].y += Math.max(-9, Math.min(9, vel[id].y));
       });
     }
-    for (var warmup = 0; warmup < 420; warmup++) tick();
+    // The first copy of the mini Flint works the layout out; the other copies reuse it, so the page starts faster.
+    if (SETTLED) {
+      ids.forEach(function (id) { pos[id] = { x: SETTLED[id].x, y: SETTLED[id].y }; });
+    } else {
+      for (var warmup = 0; warmup < 420; warmup++) tick();
+      SETTLED = {};
+      ids.forEach(function (id) { SETTLED[id] = { x: pos[id].x, y: pos[id].y }; });
+    }
 
     var NS = 'http://www.w3.org/2000/svg';
     var world = document.createElementNS(NS, 'g');
@@ -513,5 +522,8 @@
     show();
   }
 
-  document.querySelectorAll('[data-demo]').forEach(Demo);
+  // The mini Flint is far down the page, so it is built once the top of the page is up and the browser is idle.
+  var start = function () { document.querySelectorAll('[data-demo]').forEach(Demo); };
+  if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 1500 });
+  else setTimeout(start, 250);
 })();

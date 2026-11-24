@@ -354,8 +354,10 @@
   function fit() {
     W = window.innerWidth;
     H = window.innerHeight;
-    canvas.width = Math.max(2, Math.round(W * detail));
-    canvas.height = Math.max(2, Math.round(H * detail));
+    // Never draw more than about 1.7 million dots per frame, however large the screen is.
+    var used = Math.min(detail, Math.sqrt(1700000 / Math.max(1, W * H)));
+    canvas.width = Math.max(2, Math.round(W * used));
+    canvas.height = Math.max(2, Math.round(H * used));
     gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
