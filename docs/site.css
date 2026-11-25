@@ -1095,6 +1095,28 @@ footer {
   border-color: #ffffff;
 }
 
+/* ---- web clipper: the one button under its three steps ---- */
+
+.clip-get {
+  margin-top: 34px;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.clip-get p {
+  margin: 0;
+  max-width: 560px;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.step b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ---- keyboard shortcuts ---- */
 
 .keys {
