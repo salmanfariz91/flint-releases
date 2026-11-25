@@ -794,7 +794,7 @@ h2 {
 .help {
   margin-top: 48px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
 
@@ -938,6 +938,14 @@ h2 {
 
 .downloads.one .dl[data-platform='windows']:not(.is-main)::after {
   content: 'Also available for Windows';
+}
+
+.downloads.one .dl[data-platform='mac']:not(.is-main)::after {
+  content: 'Also available for Mac';
+}
+
+.dl[hidden] {
+  display: none;
 }
 
 .downloads.one .dl:not(.is-main):hover {
@@ -1501,6 +1509,7 @@ footer a:hover {
 }
 
 .mock-win-box,
+.mock-mac-box,
 .mock-phone-box {
   width: min(300px, 100%);
   padding: 16px 18px;
@@ -1518,6 +1527,15 @@ footer a:hover {
   background: linear-gradient(160deg, #1267c4, #0a4a94);
   color: #e6f0ff;
   transform: rotateX(10deg) rotateY(-12deg);
+}
+
+.mock-mac-box {
+  background: linear-gradient(160deg, #34343d, #1e1e25);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  color: #d6d6dc;
+  transform: rotateX(10deg);
+  animation-delay: -1.5s;
 }
 
 .mock-phone-box {
@@ -2336,6 +2354,10 @@ footer a:hover {
 @media (max-width: 900px) {
   .features {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .help {
+    grid-template-columns: 1fr;
   }
 }
 
